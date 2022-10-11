@@ -86,7 +86,7 @@ func (v *VideoModel) SaveForeignVideo(ctx context.Context, title, description st
 			log.Infof("User %s does not exist for video %s, creating...", foreignAuthorUsername, originalVideoID)
 
 			regReq := proto.RegisterRequest{
-				Email:          "",
+				Email:          "fake@user.com", // NO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				Username:       foreignAuthorUsername,
 				Password:       "",
 				ForeignUser:    true,
@@ -242,6 +242,7 @@ func (v *VideoModel) GetVideoList(direction videoproto.SortDirection, pageNum in
 
 		video.Rating = basicInfo.rating
 		video.AuthorName = basicInfo.authorName
+		video.AuthorID = basicInfo.authorID
 		video.Views = uint64(views)
 
 		// FIXME: nothing is quite as dumb as this
@@ -492,6 +493,7 @@ func extractSearchTerms(search string) (includeTerms, excludeTerms []string) {
 
 type basicVideoInfo struct {
 	authorName string
+	authorID   int64
 	rating     float64
 }
 
@@ -576,6 +578,7 @@ func (v *VideoModel) getBasicVideoInfo(authorID int64, videoID int64) (*basicVid
 	}
 
 	videoInfo.authorName = resp.Username
+	videoInfo.authorID = authorID
 
 	// Look up ratings from redis
 	videoInfo.rating, err = v.GetAverageRatingForVideoID(videoID)

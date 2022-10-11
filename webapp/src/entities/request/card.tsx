@@ -117,12 +117,10 @@ function Component({
             dValue={UndownloadableVideos}
           />
           <DS isHorizontal dKey="Backoff factor" dValue={BackoffFactor} />
+          <DS dKey="Last Sync" dValue={LastSynced} />
         </DL>
       </CardBody>
       <CardFooter>
-        <DL>
-          <DS dKey="Last Sync" dValue={LastSynced} />
-        </DL>
         <ListUnordered className={styles.actions} isHorizontal>
           <ListItem>
             <Button
@@ -131,6 +129,9 @@ function Component({
             >
               Delete
             </Button>
+          </ListItem>
+          <ListItem>
+            <LinkInternal href={"/account/archives/events/" + DownloadID}>Logs</LinkInternal>
           </ListItem>
           <ListItem>
             <Button

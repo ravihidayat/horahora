@@ -5,11 +5,17 @@ import { useMutex } from "react-context-mutex";
 import { WSClient, WSConfig } from "#lib/fetch";
 import { Page } from "#components/page";
 import { fetchDownloadsInProgress } from "#api/archives";
-import { CardList } from "#components/lists";
-import { LoadingBar } from "#components/loading-bar";
-import { DownloadCard, type IDownload } from "#entities/download";
+import LinearProgress from '@mui/material/LinearProgress';
 
-function ArchivalDownloadsPage() {
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
+export function ArchivalDownloadsPage() {
   const MutexRunner = useMutex();
   const mutex = new MutexRunner("messageHandler");
   const [conn, setConn] = useState<WSClient | null>(null);
@@ -170,19 +176,41 @@ function ArchivalDownloadsPage() {
     mutex.unlock();
   }
 
+  let columns = [
+    {field: "VideoID", headerName: "Video"},
+    {field: "Website", headerName: "Website"},
+    {field: "DlStatus", headerName: "Status"},
+    {field: "progress", headerName: "Progress"},
+  ]
+
   return (
-    <Page title="Downloads in progress">
-      <CardList>
-        {!videoInProgressDataset ? (
-          <LoadingBar />
-        ) : (
-          videoInProgressDataset.map((download, index) => (
-            <DownloadCard key={index} download={download} />
-          ))
-        )}
-      </CardList>
-    </Page>
+        <Page>
+        <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+            <TableHead>
+            <TableRow>
+                <TableCell align="left">VideoID</TableCell>
+                <TableCell align="left">Website</TableCell>
+                <TableCell align="left">Status</TableCell>
+                <TableCell align="left">Progress</TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {videoInProgressDataset ? videoInProgressDataset.map((row) => (
+                <TableRow
+                key={row.name}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                <TableCell align="left">{row.VideoID}</TableCell>
+                <TableCell align="left">{row.Website}</TableCell>
+                <TableCell align="left">{row.DlStatus}</TableCell>
+                <TableCell align="left">Progress: <LinearProgress color="success" variant="determinate" value={row.progress} />{row.progress}%</TableCell>
+                </TableRow>
+            )): null }
+            </TableBody>
+        </Table>
+        </TableContainer>
+        </Page>
+
   );
 }
-
-export default ArchivalDownloadsPage;

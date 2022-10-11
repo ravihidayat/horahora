@@ -12,6 +12,7 @@ import {
   type ICardProps,
 } from "#components/lists";
 import { blockComponent } from "#components/meta";
+import { ProfileURL } from "#lib/urls";
 
 // eslint-disable-next-line
 import styles from "./card.module.scss";
@@ -34,10 +35,13 @@ function Component({ post, headingLevel, ...blockProps }: IPostVideoCardProps) {
   return (
     <Card {...blockProps}>
       <CardHeader>
-        <Heading level={headingLevel}>{Title}</Heading>
+        <a href={`/videos/${VideoID}`}>
+          <Heading level={headingLevel}>{Title}</Heading>
+        </a>
       </CardHeader>
-      <CardBody>
-        <ImageLink
+
+      <CardFooter>
+      <ImageLink
           className={styles.preview}
           src={ThumbnailLoc}
           href={`/videos/${VideoID}`}
@@ -48,14 +52,12 @@ function Component({ post, headingLevel, ...blockProps }: IPostVideoCardProps) {
             img.src = `${ThumbnailLoc.slice(0, -6)}.jpg`;
           }}
         />
-      </CardBody>
-      <CardFooter>
         <DL>
           <DS
             isHorizontal
             dKey="By"
-            dValue={
-              AuthorName
+            dValue={<LinkInternal href={new ProfileURL(AuthorID)}> {AuthorName} </LinkInternal>}
+
               // @TODO: `AuthorID` should point to the imported profile
               // not the account which made the request.
               // <LinkInternal
@@ -66,17 +68,9 @@ function Component({ post, headingLevel, ...blockProps }: IPostVideoCardProps) {
               // >
               //   {AuthorName}
               // </LinkInternal>
-            }
+
           />
         </DL>
-        <LinkInternal
-          className={styles.link}
-          href={`/videos/${VideoID}`}
-          rel={"referrer"}
-          target={"_blank"}
-        >
-          Details
-        </LinkInternal>
       </CardFooter>
     </Card>
   );

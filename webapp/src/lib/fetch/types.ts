@@ -25,7 +25,7 @@ export class PublicAPIURL extends URL {
 }
 
 export class FetchError extends Error {
-  constructor(baseMessage: string, response: Response, body: any) {
+  constructor(baseMessage: string, response: Response, body: any = []) {
     const message = [
       `${baseMessage}. Details:`,
       `Status: ${response.status}`,
@@ -35,7 +35,6 @@ export class FetchError extends Error {
     super(message);
   }
 }
-
 
 export async function FetchErrorWithBody(baseMessage: string, response: Response) {
   let body: Uint8Array = await response.json();
